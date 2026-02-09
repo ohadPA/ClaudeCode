@@ -251,3 +251,76 @@ FOLLOW-UPS NEEDED:
 - technical estimate for templates (jamie)
 
 busy week ahead!
+
+---
+
+# ACTION ITEMS SUMMARY - Monday 10/7
+
+*Extracted and organized by Claude Code*
+
+## By Owner
+
+### You (Senior PM)
+
+| # | Action Item | Meeting | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Research competitor onboarding (Asana, Linear, ClickUp) | Product Sync | 🔴 High | Wed 10/9 |
+| 2 | Draft PRD for notification improvements | Stakeholder Check-in | 🔴 High | Fri 10/11 |
+| 3 | Talk to Customer Success re: notification ticket volume | Stakeholder Check-in | 🟡 Medium | Thu 10/10 |
+| 4 | Competitive analysis on notification systems | Stakeholder Check-in | 🟡 Medium | Tue 10/15 |
+| 5 | Write one-pager on template library (scope, goals, timeline) | Template Planning | 🔴 High | Fri 10/11 |
+| 6 | Gather data on activation drop-off points | Template Planning | 🟡 Medium | Fri 10/11 |
+| 7 | Review Alex's mobile PRD | Parking Lot | 🟡 Medium | Wed 10/9 |
+| 8 | Investigate competitor "Motion" and AI features | Parking Lot | 🟢 Low | Next week |
+
+### Jordan (Head of Design)
+
+| # | Action Item | Meeting | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Investigate dark mode contrast issues with user-uploaded images | Product Sync | 🟡 Medium | Wed 10/9 |
+| 2 | Wireframes for interactive tour concept | Product Sync | 🔴 High | Mon 10/14 |
+| 3 | Quick mockups of template selection UI | Template Planning | 🟡 Medium | Mon 10/14 |
+| 4 | Dark mode final mockups (design review Wed) | Parking Lot | 🔴 High | Wed 10/9 |
+
+### Sarah (Head of Product)
+
+| # | Action Item | Meeting | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Talk to Customer Success about common activation blockers | Product Sync | 🔴 High | Fri 10/11 |
+| 2 | Decide: template library Q1 or Q2? | Template Planning | 🔴 High | Fri 10/11 |
+| 3 | Schedule API v2 roadmap discussion | Parking Lot | 🟢 Low | Next week |
+
+### Mike (CTO)
+
+| # | Action Item | Meeting | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Technical spec for notification system (if moving forward) | Stakeholder Check-in | 🟡 Medium | TBD |
+| 2 | Investigate search performance regression | Parking Lot | 🟡 Medium | This week |
+
+### Jamie (Engineering Lead)
+
+| # | Action Item | Meeting | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | More detailed technical estimate for template library | Template Planning | 🟡 Medium | Fri 10/11 |
+
+### Alex (Mobile PM)
+
+| # | Action Item | Meeting | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Check if mobile app needs template support at launch | Template Planning | 🟡 Medium | Fri 10/11 |
+| 2 | Demo mobile app beta | Product Sync | 🔴 High | Next week |
+
+---
+
+## Key Decisions Needed
+
+1. **Q1 vs Q2 prioritization** - Template library, notifications, dark mode (discuss with Sarah)
+2. **Notification timeline** - Mike suggests Q2, but it's a real pain point
+3. **Template library scope** - Web only first, or mobile too?
+
+## Data to Pull This Week
+
+- Activation funnel breakdown (drop-off points)
+- Notification ticket volume (last 3 months)
+- Feature request frequency (dark mode vs templates vs notifications)
+- NPS and user satisfaction survey results

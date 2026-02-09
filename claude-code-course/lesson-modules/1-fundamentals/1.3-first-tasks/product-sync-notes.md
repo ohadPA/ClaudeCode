@@ -249,3 +249,63 @@ wed oct 16: notification go/no-go
 fri oct 18: Q1 roadmap finalization
 
 meeting done 3:32pm
+
+---
+
+# ACTION ITEMS BY OWNER
+
+*Extracted from Product Sync - Mon Oct 7, 2:30pm*
+
+### You (Senior PM)
+
+| # | Action Item | Section | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Comprehensive notification PRD | Notifications | 🔴 High | Fri Oct 11 |
+| 2 | Competitive analysis - notification systems (Asana, Linear, ClickUp) | Notifications | 🟡 Medium | Tue Oct 15 |
+
+### Mike (CTO)
+
+| # | Action Item | Section | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Tech spec for notifications (architecture, DB schema, migration plan) | Notifications | 🔴 High | Fri Oct 11 |
+| 2 | Spec Redis vs SQS for async queue | Notifications | 🔴 High | Fri Oct 11 |
+
+### Jordan (Head of Design)
+
+| # | Action Item | Section | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | UX flows + wireframes for notification redesign | Notifications | 🔴 High | Mon Oct 14 |
+
+### Alex (Mobile PM)
+
+| # | Action Item | Section | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Mobile considerations doc for notifications | Notifications | 🟡 Medium | Mon Oct 14 |
+| 2 | Investigate GitHub integration issue (escalated) | Parking Lot | 🟡 Medium | This week |
+
+### Jamie (Engineering Lead)
+
+| # | Action Item | Section | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Engineering estimate breakdown for notifications | Notifications | 🟡 Medium | Tue Oct 15 |
+
+### Sarah (Head of Product)
+
+| # | Action Item | Section | Priority | Due Date |
+|---|------------|---------|----------|----------|
+| 1 | Schedule notification follow-up meeting | Notifications | 🔴 High | Wed Oct 16, 3pm |
+| 2 | Finalize Q1 vs Q2 roadmap priorities | Prioritization | 🔴 High | Fri Oct 18 |
+| 3 | Schedule API v2 planning session | Parking Lot | 🟢 Low | Next week |
+
+---
+
+### Key Decisions Made
+- ✅ Moving forward with 3-tier notification system (unanimous)
+- ✅ Async queue approved (Mike to spec Redis vs SQS)
+- ✅ Q1 revised plan: Mobile + Dark Mode + Templates (web) + Notif infrastructure
+- ✅ Q2 plan: Notif UX redesign + Templates mobile + Enterprise features
+
+### Decisions Pending
+- ⏸ Notification timeline: Q1 or Q2? (decide by end of week)
+- ⏸ Per-project notification preferences deferred to v2
+- ⏸ A/B testing approach needs data team input
