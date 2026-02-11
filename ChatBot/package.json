@@ -1,0 +1,9 @@
+{
+  "name": "taskflow-chatbot",
+  "version": "1.0.0",
+  "description": "TaskFlow customer support chatbot POC",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
