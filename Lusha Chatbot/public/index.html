@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lusha ChatBot</title>
+  <style>
+    /* --- Reset & Base --- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* --- Chat Container --- */
+    .chat-container {
+      width: 480px;
+      max-width: 100vw;
+      height: 720px;
+      max-height: 95vh;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* --- Header --- */
+    .chat-header {
+      background: linear-gradient(135deg, #600DFF, #7B2FFF);
+      color: #fff;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-header .logo {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .chat-header .info h1 {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .chat-header .info p {
+      font-size: 12px;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #34d399;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 4px;
+    }
+
+    /* --- Messages Area --- */
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+    }
+
+    .chat-messages::-webkit-scrollbar { width: 6px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+    /* --- Message Bubbles --- */
+    .message {
+      display: flex;
+      gap: 10px;
+      max-width: 90%;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .message.bot { align-self: flex-start; }
+    .message.user { align-self: flex-end; flex-direction: row-reverse; }
+
+    .message .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .message.bot .avatar {
+      background: linear-gradient(135deg, #600DFF, #7B2FFF);
+      color: #fff;
+    }
+
+    .message.user .avatar {
+      background: #e5e7eb;
+      color: #6b7280;
+    }
+
+    .message .bubble {
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .message.bot .bubble {
+      background: #f3f4f6;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.user .bubble {
+      background: #600DFF;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    /* --- Markdown inside bot bubbles --- */
+    .bubble strong { font-weight: 600; }
+
+    .bubble .md-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 8px 0;
+      font-size: 12px;
+    }
+    .bubble .md-table th,
+    .bubble .md-table td {
+      border: 1px solid #d1d5db;
+      padding: 4px 8px;
+      text-align: left;
+    }
+    .bubble .md-table th {
+      background: #e5e7eb;
+      font-weight: 600;
+    }
+
+    .bubble ul, .bubble ol {
+      padding-left: 18px;
+      margin: 4px 0;
+    }
+
+    .bubble li { margin: 2px 0; }
+
+    .bubble p { margin: 6px 0; }
+    .bubble p:first-child { margin-top: 0; }
+    .bubble p:last-child { margin-bottom: 0; }
+
+    .bubble em {
+      font-style: italic;
+      opacity: 0.7;
+      font-size: 12px;
+    }
+
+    .bubble hr {
+      border: none;
+      border-top: 1px solid #d1d5db;
+      margin: 12px 0;
+    }
+
+    /* --- Fenced Code Blocks --- */
+    .bubble .code-block {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 8px;
+      margin: 8px 0;
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    .bubble .code-block-header {
+      background: #313244;
+      color: #a6adc8;
+      padding: 6px 12px;
+      font-size: 11px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bubble .code-block-copy {
+      background: none;
+      border: 1px solid #585b70;
+      color: #a6adc8;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 10px;
+    }
+
+    .bubble .code-block-copy:hover {
+      background: #585b70;
+      color: #cdd6f4;
+    }
+
+    .bubble .code-block pre {
+      margin: 0;
+      padding: 12px;
+      overflow-x: auto;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      line-height: 1.5;
+      white-space: pre;
+    }
+
+    /* Inline code */
+    .bubble .inline-code {
+      background: #e5e7eb;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 12px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    /* --- Typing Indicator --- */
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      padding: 0 20px;
+    }
+
+    .typing-indicator.visible { display: flex; }
+
+    .typing-indicator .dots {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      background: #f3f4f6;
+      padding: 12px 16px;
+      border-radius: 16px;
+      margin-left: 42px;
+    }
+
+    .typing-indicator .dot {
+      width: 8px;
+      height: 8px;
+      background: #9ca3af;
+      border-radius: 50%;
+      animation: bounce 1.4s infinite ease-in-out;
+    }
+
+    .typing-indicator .dot:nth-child(1) { animation-delay: 0s; }
+    .typing-indicator .dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator .dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* --- Input Area --- */
+    .chat-input {
+      padding: 16px 20px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      gap: 10px;
+      background: #fff;
+    }
+
+    .chat-input input {
+      flex: 1;
+      border: 1px solid #d1d5db;
+      border-radius: 24px;
+      padding: 12px 20px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .chat-input input:focus { border-color: #600DFF; }
+
+    .chat-input button {
+      background: #600DFF;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .chat-input button:hover { background: #7B2FFF; }
+    .chat-input button:disabled { background: #b794f6; cursor: not-allowed; }
+
+    .chat-input button svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* --- Quick Actions --- */
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 0 20px 12px;
+    }
+
+    .quick-action {
+      background: #f3edff;
+      color: #600DFF;
+      border: 1px solid #d4bfff;
+      border-radius: 16px;
+      padding: 6px 14px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quick-action:hover {
+      background: #600DFF;
+      color: #fff;
+      border-color: #600DFF;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 480px) {
+      .chat-container {
+        width: 100vw;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="logo">L</div>
+      <div class="info">
+        <h1>Lusha Assistant</h1>
+        <p><span class="status-dot"></span>Online — Ask me anything about Lusha</p>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="messages"></div>
+
+    <!-- Typing indicator -->
+    <div class="typing-indicator" id="typing">
+      <div class="dots">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+    </div>
+
+    <!-- Quick action buttons -->
+    <div class="quick-actions" id="quickActions">
+      <button class="quick-action" data-msg="What is Lusha?">What is Lusha?</button>
+      <button class="quick-action" data-msg="Pricing">Pricing & Credits</button>
+      <button class="quick-action" data-msg="Look up Sarah Chen">Demo Lookup Person</button>
+      <button class="quick-action" data-msg="Look up TechCorp">Demo Lookup Company</button>
+      <button class="quick-action" data-msg="Show me API code for person lookup">API Code Example</button>
+      <button class="quick-action" data-msg="Integrations">Integrations</button>
+      <button class="quick-action" data-msg="Buying signals">Buying Signals</button>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input">
+      <input type="text" id="input" placeholder="Ask about Lusha..." autocomplete="off">
+      <button id="sendBtn" title="Send">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mixpanel JS SDK (official snippet) -->
+  <script>
+    (function(f,b){if(!b.__SV){var e,g,i,h;window.mixpanel=b;b._i=[];b.init=function(e,f,c){function g(a,d){var b=d.split(".");2==b.length&&(a=a[b[0]],d=b[1]);a[d]=function(){a.push([d].concat(Array.prototype.slice.call(arguments,0)))}}var a=b;"undefined"!==typeof c?a=b[c]=[]:c="mixpanel";a.people=a.people||[];a.toString=function(a){var d="mixpanel";"mixpanel"!==c&&(d+="."+c);a||(d+=" (stub)");return d};a.people.toString=function(){return a.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
+    for(h=0;h<i.length;h++)g(a,i[h]);var j="set set_once union unset remove delete".split(" ");a.get_group=function(){function b(c){d[c]=function(){call2_args=arguments;call2=[c].concat(Array.prototype.slice.call(call2_args,0));a.push([e,call2])}}for(var d={},e=["get_group"].concat(Array.prototype.slice.call(arguments,0)),c=0;c<j.length;c++)b(j[c]);return d};b._i.push([e,f,c])};b.__SV=1.2;e=f.createElement("script");e.type="text/javascript";e.async=!0;e.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===f.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";g=f.getElementsByTagName("script")[0];g.parentNode.insertBefore(e,g)}})(document,window.mixpanel||[]);
+
+    mixpanel.init("d377d925044590785c2afd2667436b46", {
+      track_pageview: "url-with-path",
+      persistence: "localStorage",
+    });
+
+    // Generate a session ID to group messages within a single visit
+    const sessionId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substr(2);
+    let messageIndex = 0;
+
+    // Track session start
+    mixpanel.track("Session Started", {
+      referrer: document.referrer || "direct",
+      screen_width: window.innerWidth,
+      screen_height: window.innerHeight,
+      session_id: sessionId,
+    });
+  </script>
+
+  <script>
+    const messagesEl = document.getElementById("messages");
+    const inputEl = document.getElementById("input");
+    const sendBtn = document.getElementById("sendBtn");
+    const typingEl = document.getElementById("typing");
+    const quickActionsEl = document.getElementById("quickActions");
+
+    /**
+     * Render markdown to HTML.
+     * Supports: **bold**, *italic*, `inline code`, ```fenced code blocks```,
+     * bullet/numbered lists, tables, horizontal rules, line breaks.
+     */
+    function renderMarkdown(text) {
+      // First, extract fenced code blocks and replace with placeholders
+      const codeBlocks = [];
+      text = text.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
+        const idx = codeBlocks.length;
+        codeBlocks.push({ lang: lang || "text", code: code.trimEnd() });
+        return `__CODE_BLOCK_${idx}__`;
+      });
+
+      const lines = text.split("\n");
+      let html = "";
+      let inList = false;
+      let inTable = false;
+      let tableRows = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+
+        // Code block placeholder
+        const codeMatch = line.match(/^__CODE_BLOCK_(\d+)__$/);
+        if (codeMatch) {
+          if (inList) { html += "</ul>"; inList = false; }
+          if (inTable) { html += renderTable(tableRows); inTable = false; tableRows = []; }
+          const block = codeBlocks[parseInt(codeMatch[1])];
+          html += renderCodeBlock(block.lang, block.code);
+          continue;
+        }
+
+        // Horizontal rule
+        if (/^---+$/.test(line.trim())) {
+          if (inList) { html += "</ul>"; inList = false; }
+          html += "<hr>";
+          continue;
+        }
+
+        // Skip table separator rows
+        if (/^\|[\s\-:|]+\|$/.test(line.trim())) continue;
+
+        // Table rows
+        if (line.trim().startsWith("|") && line.trim().endsWith("|")) {
+          if (inList) { html += "</ul>"; inList = false; }
+          if (!inTable) {
+            inTable = true;
+            tableRows = [];
+          }
+          tableRows.push(line.trim());
+          const nextLine = lines[i + 1];
+          if (!nextLine || (!nextLine.trim().startsWith("|") && !/^\|[\s\-:|]+\|$/.test(nextLine.trim()))) {
+            html += renderTable(tableRows);
+            inTable = false;
+            tableRows = [];
+          }
+          continue;
+        }
+
+        // Close list if needed
+        if (inList && !line.match(/^[\s]*[-*]\s/) && !line.match(/^[\s]*\d+\.\s/) && line.trim() !== "") {
+          html += "</ul>";
+          inList = false;
+        }
+
+        // Bullet list items
+        if (line.match(/^[\s]*[-*]\s/)) {
+          if (!inList) { html += "<ul>"; inList = true; }
+          let content = line.replace(/^[\s]*[-*]\s/, "");
+          html += "<li>" + formatInline(content) + "</li>";
+          continue;
+        }
+
+        // Numbered list items
+        if (line.match(/^[\s]*\d+\.\s/)) {
+          if (!inList) { html += "<ul>"; inList = true; }
+          let content = line.replace(/^[\s]*\d+\.\s/, "");
+          html += "<li>" + formatInline(content) + "</li>";
+          continue;
+        }
+
+        // Empty line
+        if (line.trim() === "") {
+          if (inList) { html += "</ul>"; inList = false; }
+          html += "<br>";
+          continue;
+        }
+
+        // Regular text
+        html += "<p>" + formatInline(line) + "</p>";
+      }
+
+      if (inList) html += "</ul>";
+      return html;
+    }
+
+    /**
+     * Format inline markdown: **bold**, *italic*, `code`.
+     */
+    function formatInline(text) {
+      text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+      text = text.replace(/\*(.+?)\*/g, "<em>$1</em>");
+      text = text.replace(/`(.+?)`/g, '<span class="inline-code">$1</span>');
+      return text;
+    }
+
+    /**
+     * Render a fenced code block with dark theme and copy button.
+     */
+    function renderCodeBlock(lang, code) {
+      const id = "code-" + Math.random().toString(36).substr(2, 9);
+      const escaped = code.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      return `<div class="code-block">
+        <div class="code-block-header">
+          <span>${lang}</span>
+          <button class="code-block-copy" onclick="copyCode('${id}')">Copy</button>
+        </div>
+        <pre id="${id}">${escaped}</pre>
+      </div>`;
+    }
+
+    /**
+     * Copy code block content to clipboard.
+     */
+    window.copyCode = function(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const langEl = el.parentElement.querySelector(".code-block-header span");
+      navigator.clipboard.writeText(el.textContent).then(() => {
+        const btn = el.parentElement.querySelector(".code-block-copy");
+        btn.textContent = "Copied!";
+        setTimeout(() => { btn.textContent = "Copy"; }, 2000);
+
+        mixpanel.track("Code Copied", {
+          language: langEl ? langEl.textContent : "unknown",
+          code_length: el.textContent.length,
+          session_id: sessionId,
+        });
+      });
+    };
+
+    /**
+     * Render a markdown table to HTML.
+     */
+    function renderTable(rows) {
+      if (rows.length === 0) return "";
+      let html = '<table class="md-table">';
+      rows.forEach((row, idx) => {
+        const cells = row.split("|").filter(c => c.trim() !== "");
+        const tag = idx === 0 ? "th" : "td";
+        html += "<tr>";
+        cells.forEach(cell => {
+          html += `<${tag}>${formatInline(cell.trim())}</${tag}>`;
+        });
+        html += "</tr>";
+      });
+      html += "</table>";
+      return html;
+    }
+
+    /**
+     * Add a message to the chat.
+     */
+    function addMessage(text, sender) {
+      const msgDiv = document.createElement("div");
+      msgDiv.className = `message ${sender}`;
+
+      const avatar = document.createElement("div");
+      avatar.className = "avatar";
+      avatar.textContent = sender === "bot" ? "L" : "Y";
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+
+      if (sender === "bot") {
+        bubble.innerHTML = renderMarkdown(text);
+      } else {
+        bubble.textContent = text;
+      }
+
+      msgDiv.appendChild(avatar);
+      msgDiv.appendChild(bubble);
+      messagesEl.appendChild(msgDiv);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    /**
+     * Send a message to the chatbot API.
+     * @param {string} text - User message
+     * @param {string} [source="typed"] - How the message was triggered: "typed" or "quick_action"
+     */
+    async function sendMessage(text, source) {
+      if (!text.trim()) return;
+      source = source || "typed";
+
+      addMessage(text, "user");
+      inputEl.value = "";
+      sendBtn.disabled = true;
+      messageIndex++;
+
+      // Track every user prompt (the key "free prompts" event for querying later)
+      mixpanel.track("User Prompt", {
+        prompt_text: text,
+        prompt_length: text.length,
+        prompt_word_count: text.trim().split(/\s+/).length,
+        source: source,
+        message_index: messageIndex,
+        session_id: sessionId,
+      });
+
+      typingEl.classList.add("visible");
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text }),
+        });
+        const data = await res.json();
+
+        await new Promise((r) => setTimeout(r, 600));
+
+        typingEl.classList.remove("visible");
+        addMessage(data.response || "Sorry, something went wrong.", "bot");
+
+        // Track bot response with intent metadata
+        mixpanel.track("Bot Response", {
+          prompt_text: text,
+          source: source,
+          intent: data.intent || "unknown",
+          intent_category: data.intentCategory || "unknown",
+          match_score: data.matchScore || null,
+          matched_entry: data.matchedEntry || null,
+          message_index: messageIndex,
+          session_id: sessionId,
+        });
+      } catch (err) {
+        typingEl.classList.remove("visible");
+        addMessage("Connection error. Make sure the server is running.", "bot");
+
+        mixpanel.track("Bot Error", {
+          prompt_text: text,
+          error: "connection_error",
+          session_id: sessionId,
+        });
+      }
+
+      sendBtn.disabled = false;
+      inputEl.focus();
+    }
+
+    // --- Event Listeners ---
+    sendBtn.addEventListener("click", () => sendMessage(inputEl.value));
+
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage(inputEl.value);
+    });
+
+    quickActionsEl.addEventListener("click", (e) => {
+      const btn = e.target.closest(".quick-action");
+      if (btn) {
+        mixpanel.track("Quick Action Clicked", {
+          action_label: btn.textContent,
+          action_message: btn.dataset.msg,
+          session_id: sessionId,
+        });
+        sendMessage(btn.dataset.msg, "quick_action");
+      }
+    });
+
+    // --- Welcome message ---
+    addMessage(
+      "Hi! I'm the **Lusha Assistant**. I can help you learn about Lusha's B2B sales intelligence platform.\n\n" +
+      "Try the quick actions below, or ask me about:\n" +
+      "- **Product & pricing** — plans, credits, features\n" +
+      "- **Demo lookups** — try \"Look up Sarah Chen\" or \"Look up TechCorp\"\n" +
+      "- **API code** — try \"Show me Python code for person lookup\"\n" +
+      "- **Integrations** — Salesforce, HubSpot, and more",
+      "bot"
+    );
+  </script>
+</body>
+</html>

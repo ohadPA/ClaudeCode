@@ -1,0 +1,9 @@
+{
+  "name": "lusha-chatbot",
+  "version": "1.0.0",
+  "description": "Lusha B2B sales intelligence chatbot POC",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
