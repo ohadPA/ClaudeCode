@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(python create_deck.py:*)",
+      "Bash(start \"\" \"C:\\\\Users\\\\groha\\\\DEV\\\\ClaudeCode\\\\claude-code-course\\\\ai-response-strategy.pptx\")",
+      "Bash(taskkill:*)",
+      "Bash(cmd /c:*)",
+      "Bash(start \"\" \"C:\\\\Users\\\\groha\\\\DEV\\\\ClaudeCode\\\\claude-code-course\\\\ai-response-strategy-v2.pptx\")"
+    ]
+  }
+}
