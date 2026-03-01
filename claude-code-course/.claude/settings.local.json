@@ -6,7 +6,8 @@
       "Bash(start \"\" \"C:\\\\Users\\\\groha\\\\DEV\\\\ClaudeCode\\\\claude-code-course\\\\ai-response-strategy.pptx\")",
       "Bash(taskkill:*)",
       "Bash(cmd /c:*)",
-      "Bash(start \"\" \"C:\\\\Users\\\\groha\\\\DEV\\\\ClaudeCode\\\\claude-code-course\\\\ai-response-strategy-v2.pptx\")"
+      "Bash(start \"\" \"C:\\\\Users\\\\groha\\\\DEV\\\\ClaudeCode\\\\claude-code-course\\\\ai-response-strategy-v2.pptx\")",
+      "Bash(git push:*)"
     ]
   }
 }

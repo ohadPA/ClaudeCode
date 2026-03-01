@@ -1,0 +1,10 @@
+{
+  "name": "toolbox-chatbot",
+  "version": "2.0.0",
+  "description": "ארגז הכלים - עוזר חכם לוועד הבית (גרסת מרץ 2026)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {}
+}
