@@ -11,6 +11,7 @@ const ch4 = require("./kb-ch-4");
 const ch5 = require("./kb-ch-5");
 const ch6 = require("./kb-ch-6");
 const ch7 = require("./kb-ch-7");
+const ch8 = require("./kb-ch-8");
 
 const knowledgeBase = [
   ...ch1,
@@ -20,6 +21,7 @@ const knowledgeBase = [
   ...ch5,
   ...ch6,
   ...ch7,
+  ...ch8,
 ];
 
 module.exports = { knowledgeBase };
