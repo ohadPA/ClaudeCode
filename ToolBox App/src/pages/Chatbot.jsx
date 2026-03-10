@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Send, Building2, User, Sparkles } from 'lucide-react';
 
 // In development Vite proxies /api → localhost:3001.
@@ -150,10 +151,22 @@ export default function Chatbot() {
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
+  const location = useLocation();
+  const prefillSent = useRef(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Auto-send a message when navigated from Budget page via "איך לחסוך?"
+  useEffect(() => {
+    const prefill = location.state?.prefillMessage;
+    if (prefill && !prefillSent.current) {
+      prefillSent.current = true;
+      // Small delay so the chat window is ready
+      setTimeout(() => send(prefill), 400);
+    }
+  }, []);
 
   const send = async (text) => {
     const q = (text ?? input).trim();
